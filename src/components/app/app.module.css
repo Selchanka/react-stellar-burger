@@ -8,8 +8,7 @@
 .appMain {
   margin: 0 auto;
   display: flex;
-  flex-direction: row;  
-  align-self: stretch;
+  flex-direction: row;   
   gap: 40px;
   background-color: hsl(120, 84%, 24%);  
 }

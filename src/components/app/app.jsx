@@ -29,11 +29,12 @@ const [summaryData, setData] = React.useState([]);
         console.log(err);
       });
   }, []);
-*/}
 
-function App() {
 
-  const [state, setState] = React.useState(null);
+
+
+
+    const [state, setState] = React.useState([]);
 
   useEffect(() => {
     const getProductData = async () => {
@@ -41,24 +42,72 @@ function App() {
       const fin = await res.json();
       setState(fin.data);
     }
-    getProductData();
+    getProductData();                                    console.log(state.data)
   }, []);
+*/}
 
-  function Cc() { console.log(state); return null };
+function App() {
+{/* вариант сергея
+  const [state, setState] = React.useState([]);
+
+  function getResponseData(res) {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка: ${res.status} ${url}`);
+  }
+
+  useEffect(() => {
+
+    const getProductData = () => {
+      setState({ ...state, isLoading: true });
+      fetch(url)
+        .then(res => getResponseData(res))
+        .then(data => setState({ data: data.data, isLoading: false, hasError: false }))
+        .catch(error => setState({ ...state, hasError: true }))
+    }
+    getProductData()
+  }, [])
+
+*/}
+
+const [state, setState] = React.useState([]);
+
+function getResponseData(res) {
+  if (res.ok) {
+    return res.json();
+  }
+  return Promise.reject(`Ошибка: ${res.status} ${url}`);
+}
+
+React.useEffect(() => {
+
+  const getProductData = () => {
+    setState({ ...state, isLoading: true, hasError: false  });
+    fetch(url)
+      .then(res => getResponseData(res))
+      .then(data => setState({ data: data.data, isLoading: false, hasError: false }))
+      .catch(e => setState({ ...state, isLoading: false, hasError: true }))
+  };
+
+  getProductData()
+}, [])
+
 
 
   return (
     <div className={styles.app}>
       <AppHeader />
       <main className={styles.appMain}>
-         <BurgerIngredients />
-  {/*<BurgerConstructor />*/}
+         <BurgerIngredients parameter={state.data} />
+         {/*<BurgerConstructor />*/}
       </main>
-      <Cc />
     </div>
-
   );
 }
 
 export default App;
 
+{/* <Cc parameter={state.data} />
+function Cc(a) { console.log(a); return null};
+*/}
