@@ -29,8 +29,7 @@ function App() {
   }, [])
 
   function Main({ data }) {
-    if (data !== undefined) {
-      { console.log(data) }
+    if (data !== undefined) {      
       return (<main className={styles.appMain}>
         <BurgerIngredients parameter={data} />
         <BurgerConstructor />

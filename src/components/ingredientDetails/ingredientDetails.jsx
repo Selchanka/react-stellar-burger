@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./ingredientDetails.module.css";
-import PropTypes from 'prop-types';
+import { ingredientPropType } from '../../utils/prop-types';
 
 function ingredientDetails(data) {
   const element = data.data;
@@ -33,4 +33,6 @@ function ingredientDetails(data) {
 
 export default ingredientDetails;
 
-ingredientDetails.propTypes = {data: PropTypes.object.isRequired};
+ingredientDetails.propTypes = {data: ingredientPropType.isRequired,};
+
+

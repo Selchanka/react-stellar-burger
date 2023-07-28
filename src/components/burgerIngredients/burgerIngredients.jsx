@@ -3,8 +3,8 @@ import styles from "./burgerIngredients.module.css";
 import { Tab, Counter, CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredientDetails/ingredientDetails";
-import PropTypes from 'prop-types';
-
+import {ingredientPropType} from "../../utils/prop-types.js";
+import PropTypes from "prop-types";
 
 function BurgerIngredients(data) {
   const [element, setDataModal] = React.useState([]);
@@ -12,12 +12,12 @@ function BurgerIngredients(data) {
   const onClose = () => setModal(false);
 
   function BlockTab() {
-    const [current, setCurrent] = React.useState('one')
+    const [current, setCurrent] = React.useState('bun')
     return (
       <div className={`${styles.blocktab} mb-10`}>
-        <Tab value="one" active={current === 'one'} onClick={setCurrent}>Булки</Tab>
-        <Tab value="two" active={current === 'two'} onClick={setCurrent}>Соусы</Tab>
-        <Tab value="three" active={current === 'three'} onClick={setCurrent}>Начинки</Tab>
+        <Tab value="bun" active={current === "bun"} onClick={setCurrent}>Булки</Tab>
+        <Tab value="sauce" active={current === "sauce"} onClick={setCurrent}>Соусы</Tab>
+        <Tab value="main" active={current === "main"} onClick={setCurrent}>Начинки</Tab>
       </div>
     )
   }
@@ -69,8 +69,11 @@ function BurgerIngredients(data) {
 
     </section>
   );
+ 
 }
 
 export default BurgerIngredients;
 
-BurgerIngredients.propTypes = {data: PropTypes.node};
+BurgerIngredients.propTypes = {data: PropTypes.arrayOf(ingredientPropType.isRequired,)};
+
+
