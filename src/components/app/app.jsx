@@ -3,25 +3,17 @@ import styles from "./app.module.css";
 import AppHeader from "../appHeader/appHeader";
 import BurgerIngredients from "../burgerIngredients/burgerIngredients";
 import BurgerConstructor from "../burgerConstructor/burgerConstructor";
-const url = "https://norma.nomoreparties.space/api/ingredients";
+import {getIngredients} from "../../utils/burger-api";
 
 
 function App() {
 
   const [state, setState] = React.useState([]);
-
-  function getResponseData(res) {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status} ${url}`);
-  }
-  
+   
   useEffect(() => {
     const getProductData = () => {
       setState({ ...state, isLoading: true, hasError: false });
-      fetch(url)
-        .then(res => getResponseData(res))
+      getIngredients()
         .then(data => setState({ ...state, data: data.data, isLoading: false, hasError: false }))
         .catch(evt => setState({ ...state, isLoading: false, hasError: true }))
     };
@@ -47,5 +39,4 @@ function App() {
 }
 
 export default App;
-
 
