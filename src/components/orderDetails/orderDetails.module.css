@@ -1,0 +1,11 @@
+.modalconstructor {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 720px;
+}
+
+.modaltitle {
+  text-shadow: rgb(76, 51, 212) 1px 1px 20px;
+}

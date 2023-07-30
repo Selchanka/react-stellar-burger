@@ -1,0 +1,41 @@
+.header {
+  margin: 0 auto;
+  width: 100%;
+  background-color: #1C1C21;
+  color: #f2f2f3;
+}
+
+.headerNav {
+  margin: auto;
+  width: 1280px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: auto;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btnContain {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  justify-content: end;
+}
+
+.btnSize {
+  padding: 0;
+  padding: 20px;
+}
+
+.btnPosition {
+  justify-content: start;
+}
+
+:hover.btnContain {
+  opacity: 0.6;
+}
+
+.btnText {
+  color: #f2f2f3;
+}
