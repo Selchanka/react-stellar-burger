@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useReducer } from "react";
 import styles from "./burgerConstructor.module.css";
 import { ConstructorElement, Button, CurrencyIcon, DragIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
@@ -6,10 +6,10 @@ import OrderDetails from "../orderDetails/orderDetails";
 import { IngredientsConstructorContext, TotalPrice } from "../../services/ingredientsConstructorContext";
 import { generateUuid, uuidsEqual, extractUuid } from '@packageforge/uuid';
 
-function BurgerConstructor() {
+function BurgerConstructor({handleClickDeleteIngredient}) {
 
   const [ingredientsContext, setIngredientsContext] = React.useContext(IngredientsConstructorContext);
-  const [price, setPrice] = React.useContext(TotalPrice)
+  const [price, setPrice] = React.useContext(TotalPrice); 
 
   const [isModal, setModal] = React.useState(false);
   const onClose = () => setModal(false);
@@ -22,7 +22,7 @@ function BurgerConstructor() {
           <li className={styles.ingrediens} key={generateUuid()}>
             <div className={styles.drag}><DragIcon type="primary" /></div>
             <ConstructorElement text={item.name} price={item.price}
-              thumbnail={item.image_mobile} />
+              thumbnail={item.image_mobile} handleClose={(evt) => handleClickDeleteIngredient(evt, item) }/>
           </li>
         )
       }))

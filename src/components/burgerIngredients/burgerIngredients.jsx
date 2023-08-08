@@ -1,28 +1,18 @@
-import React from "react";
+import React, { useContext, useEffect, useReducer } from "react";
 import styles from "./burgerIngredients.module.css";
 import { Tab, Counter, CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredientDetails/ingredientDetails";
-import {ingredientPropType} from "../../utils/prop-types.js";
+import { ingredientPropType } from "../../utils/prop-types.js";
 import PropTypes from "prop-types";
 import { IngredientsConstructorContext } from "../../services/ingredientsConstructorContext";
 
-function BurgerIngredients(data) {
-
+function BurgerIngredients({parameter,handleClickIngredientMenu}) {  
+  
   const [element, setDataModal] = React.useState([]);
   const [isModal, setModal] = React.useState(false);
   const onClose = () => setModal(false);
-
- // Обработка кликов на ингредиент //  
-const [ingredientsContext, setIngredientsContext] = React.useContext(IngredientsConstructorContext);
-const handleClickIngredientMenu = (ingredient) => { 
-  if (ingredient.type === "bun") 
-  {setIngredientsContext({...ingredientsContext, bun: ingredient}) } 
-  else {  
-  setIngredientsContext({ ...ingredientsContext, ingredients: [...ingredientsContext.ingredients, ingredient ] });   
-  }
-}
-
+ 
   function BlockTab() {
     const [current, setCurrent] = React.useState('bun')
     return (
@@ -42,12 +32,11 @@ const handleClickIngredientMenu = (ingredient) => {
           {parament.map((ingredient) => {
             if (ingredient.type === type) {
               return (
-                <li className={styles.element} key={ingredient['_id']} 
-                onClick={() => handleClickIngredientMenu(ingredient)}
-                >
+                <li className={styles.element} key={ingredient['_id']} data={ingredient}
+                onClick={(evt) =>  handleClickIngredientMenu(evt, ingredient)}>
                   <img className={styles.image} src={ingredient.image} alt="Фото ингредиента" />
-                  <div className={styles.counter}  style={{ display: "none" }}>
-                  <Counter count={1} size="default" extraClass={`m-1`} /></div>
+                  <div className={styles.counter} style={{ display: "none" }}>
+                    <Counter count={1} size="default" extraClass={`m-1`} /></div>
                   <p className={`${styles.names} text text_type_main-small`}>{ingredient.name}</p>
                   <div className={styles.blockPrice}>
                     <p className={`${styles.prices} text text_type_main-medium`}>{ingredient.price}</p>
@@ -60,28 +49,28 @@ const handleClickIngredientMenu = (ingredient) => {
         </ul>
       </div>
     )
-  }  
+  }
 
   return (
     <section className={styles.section}>
       <h1 className={`mt-10 mb-5 text text_type_main-large`}>Соберите бургер</h1>
       <BlockTab />
       <div className={`${styles.menu} custom-scroll `} >
-        <BlockMenu title="Булки" type="bun" parament={data.parameter} />
-        <BlockMenu title="Соусы" type="sauce" parament={data.parameter} />
-        <BlockMenu title="Начинки" type="main" parament={data.parameter} />
+        <BlockMenu title="Булки" type="bun" parament={parameter} />
+        <BlockMenu title="Соусы" type="sauce" parament={parameter} />
+        <BlockMenu title="Начинки" type="main" parament={parameter} />
       </div>
 
       {isModal && (<Modal onClose={onClose}><IngredientDetails data={element} /></Modal>)}
 
     </section>
   );
- 
+
 }
 
 export default BurgerIngredients;
 
-BurgerIngredients.propTypes = {data: PropTypes.arrayOf(ingredientPropType.isRequired,)};
+BurgerIngredients.propTypes = { parameter: PropTypes.arrayOf(ingredientPropType.isRequired,) };
 
 
 {/* 
