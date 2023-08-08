@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@packageforge/uuid": "^0.0.3",
     "@reduxjs/toolkit": "^1.7.2",
     "@ya.praktikum/react-developer-burger-ui-components": "^1.14.0",
     "clsx": "^1.2.1",

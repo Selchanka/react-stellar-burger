@@ -3,13 +3,14 @@ import styles from "./app.module.css";
 import AppHeader from "../appHeader/appHeader";
 import BurgerIngredients from "../burgerIngredients/burgerIngredients";
 import BurgerConstructor from "../burgerConstructor/burgerConstructor";
-import {getIngredients} from "../../utils/burger-api";
+import { getIngredients } from "../../utils/burger-api";
+import { IngredientsConstructorContext, TotalPrice } from "../../services/ingredientsConstructorContext";
 
 
 function App() {
-
+  const [ingredientsContext, setIngredientsContext] = React.useState({ bun: null, ingredients: [] });
+  
   const [state, setState] = React.useState([]);
-   
   useEffect(() => {
     const getProductData = () => {
       setState({ ...state, isLoading: true, hasError: false });
@@ -20,11 +21,24 @@ function App() {
     getProductData()
   }, [])
 
+  const totalPrice = { sum: 0 };
+  const reducerPrice = (price, ingredientsContext) => {
+    console.log(ingredientsContext);
+    };
+  const [price, setPrice] = React.useReducer(reducerPrice, totalPrice);
+  
+
+
+
   function Main({ data }) {
-    if (data !== undefined) {      
+    if (data !== undefined) {
       return (<main className={styles.appMain}>
-        <BurgerIngredients parameter={data} />
-        <BurgerConstructor />
+        <IngredientsConstructorContext.Provider value={[ingredientsContext, setIngredientsContext]}>
+          <TotalPrice.Provider value={[price, setPrice]}>
+            <BurgerIngredients parameter={data} />
+            <BurgerConstructor />
+          </TotalPrice.Provider>
+        </IngredientsConstructorContext.Provider>
       </main>);
     }
     else { return null; }
@@ -32,7 +46,7 @@ function App() {
 
   return (
     <div className={styles.app}>
-      <AppHeader /> 
+      <AppHeader />
       <Main data={state.data} />
     </div>
   );
