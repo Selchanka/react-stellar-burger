@@ -1,18 +1,20 @@
-import React, { useContext, useEffect, useReducer } from "react";
+import React from "react";
 import styles from "./burgerIngredients.module.css";
 import { Tab, Counter, CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredientDetails/ingredientDetails";
 import { ingredientPropType } from "../../utils/prop-types.js";
 import PropTypes from "prop-types";
-import { IngredientsConstructorContext } from "../../services/ingredientsConstructorContext";
 
-function BurgerIngredients({parameter,handleClickIngredientMenu}) {  
-  
+{/* На данный момент, клик по ингредиенту, перекидывает ингредиент в конструктор. 
+Открытие popup с характеристиками ингредиента отключено.*/}
+
+function BurgerIngredients({ parameter, handleClickIngredientMenu }) {
+
   const [element, setDataModal] = React.useState([]);
   const [isModal, setModal] = React.useState(false);
   const onClose = () => setModal(false);
- 
+
   function BlockTab() {
     const [current, setCurrent] = React.useState('bun')
     return (
@@ -33,7 +35,7 @@ function BurgerIngredients({parameter,handleClickIngredientMenu}) {
             if (ingredient.type === type) {
               return (
                 <li className={styles.element} key={ingredient['_id']} data={ingredient}
-                onClick={(evt) =>  handleClickIngredientMenu(evt, ingredient)}>
+                  onClick={(evt) => handleClickIngredientMenu(evt, ingredient)}>
                   <img className={styles.image} src={ingredient.image} alt="Фото ингредиента" />
                   <div className={styles.counter} style={{ display: "none" }}>
                     <Counter count={1} size="default" extraClass={`m-1`} /></div>
@@ -70,10 +72,14 @@ function BurgerIngredients({parameter,handleClickIngredientMenu}) {
 
 export default BurgerIngredients;
 
-BurgerIngredients.propTypes = { parameter: PropTypes.arrayOf(ingredientPropType.isRequired,) };
+BurgerIngredients.propTypes = {
+  parameter: PropTypes.arrayOf(ingredientPropType.isRequired,),
+  handleClickIngredientMenu: PropTypes.func.isRequired
+};
 
 
-{/* 
+{/* Прошлый вариант. Не забыть от сюда перекинуть работу с popup!
+
 function BurgerIngredients(data, handleClickIngredientMenu) {
 
   

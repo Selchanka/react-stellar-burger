@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useReducer } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import styles from "./burgerConstructor.module.css";
 import { ConstructorElement, Button, CurrencyIcon, DragIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
 import OrderDetails from "../orderDetails/orderDetails";
 import { IngredientsConstructorContext, TotalPrice, OrderDetail } from "../../services/ingredientsConstructorContext";
-import { generateUuid, uuidsEqual, extractUuid } from '@packageforge/uuid';
+import { generateUuid } from '@packageforge/uuid';
 import { getOrderDetails } from "../../utils/burger-api";
 
 function BurgerConstructor({ handleClickDeleteIngredient }) {
@@ -85,3 +86,6 @@ function BurgerConstructor({ handleClickDeleteIngredient }) {
 
 export default BurgerConstructor;
 
+BurgerConstructor.propTypes = {  
+  handleClickDeleteIngredient: PropTypes.func.isRequired
+};
