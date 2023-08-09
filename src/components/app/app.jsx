@@ -8,7 +8,7 @@ import { IngredientsConstructorContext, TotalPrice } from "../../services/ingred
 import { generateUuid, uuidsEqual, extractUuid } from '@packageforge/uuid';
 
 
-function App() { 
+function App() {
 
   const [state, setState] = React.useState([]);
   useEffect(() => {
@@ -22,11 +22,10 @@ function App() {
   }, [])
 
 
-  function handleClickIngredientMenu(evt, ingredient) {
-   ingredient.uuid=generateUuid(); console.log(ingredient.uuid);
-    
-    setIngredientsDispatcher({ type: 'add', payload: ingredient });
-    setPriceDispatcher({ type: 'change', payload: ingredient });
+  function handleClickIngredientMenu(evt, ingredient) {   
+    const key = generateUuid();
+    setIngredientsDispatcher({ type: 'add', payload: {...ingredient, uuid: key} });
+    setPriceDispatcher({ type: 'change', payload: {...ingredient, uuid: key} });
   };
 
   function handleClickDeleteIngredient(evt, ingredient) {
@@ -36,18 +35,19 @@ function App() {
 
   function constructorReducer(state, action) {
     switch (action.type) {
-      case "add": 
+      case "add":
         if (action.payload.type === "bun") { return { ...state, bun: action.payload } }
-        else { 
-          return { ...state, ingredients: [...state.ingredients, action.payload] } };
+        else {
+          return { ...state, ingredients: [...state.ingredients, action.payload] }
+        };
       case "delete":
-        const newSpisokIngredients=state.ingredients.filter(item => item.uuid !== action.payload.uuid);
+        const newSpisokIngredients = state.ingredients.filter(item => item.uuid !== action.payload.uuid);
         return { ...state, ingredients: newSpisokIngredients }
       default:
         throw new Error(`Wrong type of action: ${action.type}`);
     };
   };
-  
+
   function priceReducer(state, action) {
     switch (action.type) {
       case "change":
@@ -65,8 +65,9 @@ function App() {
   };
 
   const [ingredientsContext, setIngredientsDispatcher] = React.useReducer(constructorReducer, { bun: null, ingredients: [] });
-  console.log(ingredientsContext);
   const [priceContext, setPriceDispatcher] = React.useReducer(priceReducer, { sum: 0 });
+
+  
 
   function Main({ data }) {
     if (data !== undefined) {
@@ -74,7 +75,7 @@ function App() {
         <IngredientsConstructorContext.Provider value={[ingredientsContext, setIngredientsDispatcher]}>
           <TotalPrice.Provider value={[priceContext, setPriceDispatcher]}>
             <BurgerIngredients parameter={data} handleClickIngredientMenu={handleClickIngredientMenu} />
-            <BurgerConstructor handleClickDeleteIngredient={handleClickDeleteIngredient}/>
+            <BurgerConstructor handleClickDeleteIngredient={handleClickDeleteIngredient} />
           </TotalPrice.Provider>
         </IngredientsConstructorContext.Provider>
       </main>);
