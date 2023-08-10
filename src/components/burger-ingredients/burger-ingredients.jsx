@@ -1,13 +1,13 @@
 import React from "react";
-import styles from "./burgerIngredients.module.css";
+import styles from "./burger-ingredients.module.css";
 import { Tab, Counter, CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
-import IngredientDetails from "../ingredientDetails/ingredientDetails";
+import IngredientDetails from "../ingredient-details/ingredient-details";
 import { ingredientPropType } from "../../utils/prop-types.js";
 import PropTypes from "prop-types";
 
-{/* На данный момент, клик по ингредиенту, перекидывает ингредиент в конструктор. 
-Открытие popup с характеристиками ингредиента отключено.*/}
+{/* На данный момент, сделано так ->
+При клике на цену ингредиент добавляется в конструктор, а при клике на иконку - открывается попап ингредиента. */}
 
 function BurgerIngredients({ parameter, handleClickIngredientMenu }) {
 
@@ -34,13 +34,12 @@ function BurgerIngredients({ parameter, handleClickIngredientMenu }) {
           {parament.map((ingredient) => {
             if (ingredient.type === type) {
               return (
-                <li className={styles.element} key={ingredient['_id']} data={ingredient}
-                  onClick={(evt) => handleClickIngredientMenu(evt, ingredient)}>
-                  <img className={styles.image} src={ingredient.image} alt="Фото ингредиента" />
+                <li className={styles.element} key={ingredient['_id']} data={ingredient}>                 
+                  <img className={styles.image} src={ingredient.image} alt="Фото ингредиента" onClick={() => handleMenuClick(ingredient)}/>
                   <div className={styles.counter} style={{ display: "none" }}>
                     <Counter count={1} size="default" extraClass={`m-1`} /></div>
                   <p className={`${styles.names} text text_type_main-small`}>{ingredient.name}</p>
-                  <div className={styles.blockPrice}>
+                  <div className={styles.blockPrice}  onClick={(evt) => handleClickIngredientMenu(evt, ingredient)}>
                     <p className={`${styles.prices} text text_type_main-medium`}>{ingredient.price}</p>
                     <div className={styles.currencyIcon}> <CurrencyIcon type="primary" /></div>
                   </div>
@@ -52,6 +51,11 @@ function BurgerIngredients({ parameter, handleClickIngredientMenu }) {
       </div>
     )
   }
+
+  const handleMenuClick = (ingredient) => {       
+    setDataModal(ingredient);   
+    setModal(true);    
+  }; 
 
   return (
     <section className={styles.section}>

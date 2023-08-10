@@ -1,11 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styles from "./burgerConstructor.module.css";
+import styles from "./burger-constructor.module.css";
 import { ConstructorElement, Button, CurrencyIcon, DragIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
-import OrderDetails from "../orderDetails/orderDetails";
-import { IngredientsConstructorContext, TotalPrice, OrderDetail } from "../../services/ingredientsConstructorContext";
-import { generateUuid } from '@packageforge/uuid';
+import OrderDetails from "../order-details/order-details";
+import { IngredientsConstructorContext, TotalPrice } from "../../services/ingredients-constructor-context";
 import { getOrderDetails } from "../../utils/burger-api";
 
 function BurgerConstructor({ handleClickDeleteIngredient }) {
@@ -41,7 +40,7 @@ function BurgerConstructor({ handleClickDeleteIngredient }) {
     if (ingredient.length > 0) {
       return (ingredient.map((item) => {
         return (
-          <li className={styles.ingrediens} key={generateUuid()}>
+          <li className={styles.ingrediens} key={item.uuid}>
             <div className={styles.drag}><DragIcon type="primary" /></div>
             <ConstructorElement text={item.name} price={item.price}
               thumbnail={item.image_mobile} handleClose={(evt) => handleClickDeleteIngredient(evt, item)} />
@@ -76,10 +75,8 @@ function BurgerConstructor({ handleClickDeleteIngredient }) {
         <p className={`${styles.price} text text_type_main-large`}>{price.sum}</p>
         <div className={`mr-10 ml-3`}> <CurrencyIcon type="primary" /></div>
         <Button htmlType="button" type="primary" size="large" onClick={OpenModalOrderDetails}>Оформить заказ</Button>
-      </div>
-      <OrderDetail.Provider value={[order, setOrder]}>
-        {isModal && (<Modal onClose={onClose}><OrderDetails /></Modal>)}
-      </OrderDetail.Provider>
+      </div>      
+        {isModal && (<Modal onClose={onClose}><OrderDetails order={order}/></Modal>)}     
     </section>
   );
 }

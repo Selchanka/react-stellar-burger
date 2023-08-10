@@ -1,10 +1,10 @@
 import React from "react";
-import styles from "./orderDetails.module.css";
+import styles from "./order-details.module.css";
 import ImgCheck from "../../image/graphics.svg";
-import { OrderDetail } from "../../services/ingredientsConstructorContext";
 
-function OrderDetails() {
-  const [order, setOrder] = React.useContext(OrderDetail);
+
+function OrderDetails({order}) {
+
   return (
     <div className={`${styles.modalconstructor}`}>
       <h1 className={`${styles.modaltitle} text text_type_digits-large mt-30 mb-8`}>{order.order.number}</h1>
