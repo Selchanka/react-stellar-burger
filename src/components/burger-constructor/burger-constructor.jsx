@@ -7,13 +7,16 @@ import OrderDetails from "../order-details/order-details";
 import { IngredientsConstructorContext, TotalPrice } from "../../services/ingredients-constructor-context";
 import { getOrderDetails } from "../../utils/burger-api";
 
-function BurgerConstructor({ handleClickDeleteIngredient }) {
+function BurgerConstructor({ handleClickDeleteIngredient, handleClickClearConstructor }) {
   const [order, setOrder] = React.useState([]);
   const [ingredientsContext, setIngredientsContext] = React.useContext(IngredientsConstructorContext);
   const [price, setPrice] = React.useContext(TotalPrice);
 
   const [isModal, setModal] = React.useState(false);
-  const onClose = () => setModal(false);
+  function onClose() {
+    handleClickClearConstructor();
+    setModal(false);
+  }
 
   function OpenModalOrderDetails() {
     let newOrder = [];
@@ -51,38 +54,46 @@ function BurgerConstructor({ handleClickDeleteIngredient }) {
     else { return null; }
   }
 
-  return (
-    <section className={styles.section}>
+  function StateButton() 
+    {
+      if (ingredientsContext.bun !== null) { 
+        return (<Button htmlType="button" type="primary" size="large" onClick={OpenModalOrderDetails}>Оформить заказ</Button>) }
+      else {
+        return (<Button htmlType="button" type="primary" size="large" disabled={true} >Оформить заказ</Button>)
+      }
+    }
 
-      <ul className={`${styles.ingrediensList} mt-25 mb-10 ml-4`}>
-        {ingredientsContext.bun &&
-          (<li className={`${styles.ingrediens} ml-8`}>
-            <ConstructorElement type="top" isLocked={true} text={`${ingredientsContext.bun.name} (вверх)`} price={ingredientsContext.bun.price}
-              thumbnail={ingredientsContext.bun.image_mobile} />
-          </li>)
-        }
-        <ul className={`${styles.filling} custom-scroll`}>
-          <AddIngredientBurger parameter={ingredientsContext} />
+    return (
+      <section className={styles.section}>
+        <ul className={`${styles.ingrediensList} mt-25 mb-10 ml-4`}>
+          {ingredientsContext.bun &&
+            (<li className={`${styles.ingrediens} ml-8`}>
+              <ConstructorElement type="top" isLocked={true} text={`${ingredientsContext.bun.name} (вверх)`} price={ingredientsContext.bun.price}
+                thumbnail={ingredientsContext.bun.image_mobile} />
+            </li>)
+          }
+          <ul className={`${styles.filling} custom-scroll`}>
+            <AddIngredientBurger parameter={ingredientsContext} />
+          </ul>
+          {ingredientsContext.bun &&
+            (<li className={`${styles.ingrediens} ml-8`}>
+              <ConstructorElement type="bottom" isLocked={true} text={`${ingredientsContext.bun.name} (низ)`} price={ingredientsContext.bun.price}
+                thumbnail={ingredientsContext.bun.image_mobile} />
+            </li>)
+          }
         </ul>
-        {ingredientsContext.bun &&
-          (<li className={`${styles.ingrediens} ml-8`}>
-            <ConstructorElement type="bottom" isLocked={true} text={`${ingredientsContext.bun.name} (низ)`} price={ingredientsContext.bun.price}
-              thumbnail={ingredientsContext.bun.image_mobile} />
-          </li>)
-        }
-      </ul>
-      <div className={`${styles.finish} mr-4 ml-4`} id="modal">
-        <p className={`${styles.price} text text_type_main-large`}>{price.sum}</p>
-        <div className={`mr-10 ml-3`}> <CurrencyIcon type="primary" /></div>
-        <Button htmlType="button" type="primary" size="large" onClick={OpenModalOrderDetails}>Оформить заказ</Button>
-      </div>      
-        {isModal && (<Modal onClose={onClose}><OrderDetails order={order}/></Modal>)}     
-    </section>
-  );
-}
+        <div className={`${styles.finish} mr-4 ml-4`} id="modal">
+          <p className={`${styles.price} text text_type_main-large`}>{price.sum}</p>
+          <div className={`mr-10 ml-3`}> <CurrencyIcon type="primary" /></div>
+          <StateButton />
+        </div>
+        {isModal && (<Modal onClose={onClose}><OrderDetails order={order} /></Modal>)}
+      </section>
+    );
+  }
 
-export default BurgerConstructor;
+  export default BurgerConstructor;
 
-BurgerConstructor.propTypes = {  
-  handleClickDeleteIngredient: PropTypes.func.isRequired
-};
+  BurgerConstructor.propTypes = {
+    handleClickDeleteIngredient: PropTypes.func.isRequired
+  };

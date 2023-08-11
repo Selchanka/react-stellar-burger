@@ -22,15 +22,20 @@ function App() {
   }, [])
 
 
-  function handleClickIngredientMenu(evt, ingredient) {   
+  function handleClickIngredientMenu(evt, ingredient) {
     const key = generateUuid();
-    setIngredientsDispatcher({ type: 'add', payload: {...ingredient, uuid: key} });
-    setPriceDispatcher({ type: 'change', payload: {...ingredient, uuid: key} });
+    setIngredientsDispatcher({ type: 'add', payload: { ...ingredient, uuid: key } });
+    setPriceDispatcher({ type: 'change', payload: { ...ingredient, uuid: key } });
   };
 
   function handleClickDeleteIngredient(evt, ingredient) {
     setIngredientsDispatcher({ type: 'delete', payload: ingredient });
     setPriceDispatcher({ type: 'change', payload: ingredient });
+  };
+
+  function handleClickClearConstructor() {
+    setIngredientsDispatcher({ type: 'clear' });
+    setPriceDispatcher({ type: 'change' });
   };
 
   function constructorReducer(state, action) {
@@ -43,6 +48,8 @@ function App() {
       case "delete":
         const newSpisokIngredients = state.ingredients.filter(item => item.uuid !== action.payload.uuid);
         return { ...state, ingredients: newSpisokIngredients }
+      case "clear":
+        return { ...state, bun: null, ingredients: [] }
       default:
         throw new Error(`Wrong type of action: ${action.type}`);
     };
@@ -67,7 +74,7 @@ function App() {
   const [ingredientsContext, setIngredientsDispatcher] = React.useReducer(constructorReducer, { bun: null, ingredients: [] });
   const [priceContext, setPriceDispatcher] = React.useReducer(priceReducer, { sum: 0 });
 
-  
+
 
   function Main({ data }) {
     if (data !== undefined) {
@@ -75,7 +82,7 @@ function App() {
         <IngredientsConstructorContext.Provider value={[ingredientsContext, setIngredientsDispatcher]}>
           <TotalPrice.Provider value={[priceContext, setPriceDispatcher]}>
             <BurgerIngredients parameter={data} handleClickIngredientMenu={handleClickIngredientMenu} />
-            <BurgerConstructor handleClickDeleteIngredient={handleClickDeleteIngredient} />
+            <BurgerConstructor handleClickDeleteIngredient={handleClickDeleteIngredient} handleClickClearConstructor={handleClickClearConstructor}/>
           </TotalPrice.Provider>
         </IngredientsConstructorContext.Provider>
       </main>);
