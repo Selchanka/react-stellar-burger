@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 import styles from "./modal.module.css";
-import ModalOverlay from "../modalOverlay/modalOverlay";
+import ModalOverlay from "../modal-overlay/modal-overlay";
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 const modalRoot = document.querySelector("#root");
 
