@@ -5,11 +5,24 @@ import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
 import { ingredientPropType } from "../../utils/prop-types.js";
 import PropTypes from "prop-types";
+import { generateUuid } from '@packageforge/uuid';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { ADD_INGREDIENTS, ADD_PRICE } from '../../services/actions/list-ingredients-constructor-actions';
 
 {/* На данный момент, сделано так ->
 При клике на цену ингредиент добавляется в конструктор, а при клике на иконку - открывается попап ингредиента. */}
 
-function BurgerIngredients({ parameter, handleClickIngredientMenu }) {
+function BurgerIngredients() {
+
+  const dispatch = useDispatch();  
+  const parameter = useSelector((store) => store.listIngredients.data);
+
+  const ClickIngredientMenu = (evt, ingredient) => {
+    const key = generateUuid();
+    dispatch({ type: ADD_INGREDIENTS, payload: { ...ingredient, uuid: key } });
+    dispatch({ type: ADD_PRICE, payload: { ...ingredient } });
+  };
 
   const [element, setDataModal] = React.useState([]);
   const [isModal, setModal] = React.useState(false);
@@ -34,12 +47,12 @@ function BurgerIngredients({ parameter, handleClickIngredientMenu }) {
           {parament.map((ingredient) => {
             if (ingredient.type === type) {
               return (
-                <li className={styles.element} key={ingredient['_id']} data={ingredient}>                 
-                  <img className={styles.image} src={ingredient.image} alt="Фото ингредиента" onClick={() => handleMenuClick(ingredient)}/>
+                <li className={styles.element} key={ingredient['_id']} data={ingredient}>
+                  <img className={styles.image} src={ingredient.image} alt="Фото ингредиента" onClick={() => handleMenuClick(ingredient)} />
                   <div className={styles.counter} style={{ display: "none" }}>
                     <Counter count={1} size="default" extraClass={`m-1`} /></div>
                   <p className={`${styles.names} text text_type_main-small`}>{ingredient.name}</p>
-                  <div className={styles.blockPrice}  onClick={(evt) => handleClickIngredientMenu(evt, ingredient)}>
+                  <div className={styles.blockPrice} onClick={(evt) => ClickIngredientMenu(evt, ingredient)}>
                     <p className={`${styles.prices} text text_type_main-medium`}>{ingredient.price}</p>
                     <div className={styles.currencyIcon}> <CurrencyIcon type="primary" /></div>
                   </div>
@@ -52,10 +65,10 @@ function BurgerIngredients({ parameter, handleClickIngredientMenu }) {
     )
   }
 
-  const handleMenuClick = (ingredient) => {       
-    setDataModal(ingredient);   
-    setModal(true);    
-  }; 
+  const handleMenuClick = (ingredient) => {
+    setDataModal(ingredient);
+    setModal(true);
+  };
 
   return (
     <section className={styles.section}>
@@ -75,12 +88,12 @@ function BurgerIngredients({ parameter, handleClickIngredientMenu }) {
 }
 
 export default BurgerIngredients;
-
+{/*
 BurgerIngredients.propTypes = {
   parameter: PropTypes.arrayOf(ingredientPropType.isRequired,),
-  handleClickIngredientMenu: PropTypes.func.isRequired
+  ClickIngredientMenu: PropTypes.func.isRequired
 };
-
+*/}
 
 {/* Прошлый вариант. Не забыть от сюда перекинуть работу с popup!
 

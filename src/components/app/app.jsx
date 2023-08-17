@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import {React, useEffect} from "react";
 import styles from "./app.module.css";
 import AppHeader from "../app-header/app-header";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
@@ -13,11 +13,31 @@ import { getIngredients } from "../../utils/burger-api";
 
 function App() {
 
-  const dispatch = useDispatch();    
-  useEffect(() => {dispatch(getIngredientsData()); }, []); 
-  const state = useSelector((store) => store.listIngredients); 
+  const dispatch = useDispatch();
+  useEffect(() => { dispatch(getIngredientsData()); }, []);
+  const data = useSelector((store) => store.listIngredients);
   
+  function Main() {
+    if (data !== undefined) {
+      return (<main className={styles.appMain}>
+        <BurgerIngredients />
+        <BurgerConstructor />
+      </main>);
+    }
+    else { return null; }
+  }
 
+  return (
+    <div className={styles.app}>
+      <AppHeader />
+      <Main />
+    </div>
+  );
+}
+
+export default App;
+
+{/*
   function handleClickIngredientMenu(evt, ingredient) {
     const key = generateUuid();
     setIngredientsDispatcher({ type: 'add', payload: { ...ingredient, uuid: key } });
@@ -65,7 +85,7 @@ function App() {
       default:
         throw new Error(`Wrong type of action: ${action.type}`);
     };
-  };
+  }; 
 
   const [ingredientsContext, setIngredientsDispatcher] = React.useReducer(constructorReducer, { bun: null, ingredients: [] });
   const [priceContext, setPriceDispatcher] = React.useReducer(priceReducer, { sum: 0 });
@@ -95,4 +115,4 @@ function App() {
 }
 
 export default App;
-
+*/}
