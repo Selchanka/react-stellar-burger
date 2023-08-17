@@ -3,24 +3,20 @@ import styles from "./app.module.css";
 import AppHeader from "../app-header/app-header";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
-import { getIngredients } from "../../utils/burger-api";
+
 import { IngredientsConstructorContext, TotalPrice } from "../../services/ingredients-constructor-context";
 import { generateUuid } from '@packageforge/uuid';
+import { useDispatch, useSelector } from 'react-redux';
+import { getIngredientsData } from '../../services/actions/list-ingredients-actions';
 
+import { getIngredients } from "../../utils/burger-api";
 
 function App() {
 
-  const [state, setState] = React.useState([]);
-  useEffect(() => {
-    const getProductData = () => {
-      setState({ ...state, isLoading: true, hasError: false });
-      getIngredients()
-        .then(data => setState({ ...state, data: data.data, isLoading: false, hasError: false }))
-        .catch(evt => setState({ ...state, isLoading: false, hasError: true }))
-    };
-    getProductData()
-  }, [])
-
+  const dispatch = useDispatch();    
+  useEffect(() => {dispatch(getIngredientsData()); }, []); 
+  const state = useSelector((store) => store.listIngredients); 
+  
 
   function handleClickIngredientMenu(evt, ingredient) {
     const key = generateUuid();

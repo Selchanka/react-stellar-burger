@@ -10,7 +10,7 @@ function getResponseData(res) {
 export function getIngredients() {
    return fetch(`${url}/ingredients`)
       .then(res => getResponseData(res))
-}
+} 
 
 export const getOrderDetails = (order) => {   
    return fetch(`${url}/orders`, {
