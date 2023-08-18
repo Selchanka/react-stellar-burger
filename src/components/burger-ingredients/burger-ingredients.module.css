@@ -23,7 +23,7 @@
 .element {
   display: grid;
   grid-template-rows: 120px 4px 24px 4px 48px;
-  grid-template-columns: 16px 224px 16px 16px;
+  grid-template-columns: 16px 224px 16px 16px;     
 }
 
 .image {
@@ -69,19 +69,8 @@
   max-height: calc(100vh - 350px);
 }
 
-/*
+
 :hover.element {
   cursor: pointer;
-  border-bottom: 1px solid #584c99;
-}
-*/
-
-:hover.image {
-  cursor: pointer;
-  border: 1px solid #584c99;
-}
-
-:hover.blockPrice {
-  cursor: pointer;
-  border: 1px solid #584c99;
+  /*border-bottom: 1px solid #584c99;*/
 }

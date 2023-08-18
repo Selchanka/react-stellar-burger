@@ -1,5 +1,5 @@
 import {
-  ADD_INGREDIENTS, DELETE_INGREDIENTS, CLEAR_INGREDIENTS, ADD_PRICE
+  ADD_INGREDIENTS, DELETE_INGREDIENTS, CLEAR_INGREDIENTS, ADD_PRICE, COUNT_INGREDIENTS
 } from '../actions/list-ingredients-constructor-actions';
 import { PriceFinish } from '../../components/price/price';
 
@@ -7,6 +7,7 @@ export const initialState = {
   bun: null,
   ingredients: [],
   price: 0,
+  count: 0,
 };
 
 export const listIngredientsConstructorReducer = (state = initialState, action) => {
@@ -22,11 +23,19 @@ export const listIngredientsConstructorReducer = (state = initialState, action) 
       const newSpisokIngredients = state.ingredients.filter(item => item.uuid !== action.payload.uuid);
       return { ...state, ingredients: newSpisokIngredients }
     case CLEAR_INGREDIENTS:
-      return { ...state, bun: null, ingredients: [] }
+      return { ...state, bun: null, ingredients: [], price: 0, count: 0}
     case ADD_PRICE:
       return { ...state, price: PriceFinish(state) }
+    case COUNT_INGREDIENTS:
+      return { ...state, count: countIngredients(state) }
     default:
       return state;
   }
 };
 
+const countIngredients = (state) => {
+  let count = state.ingredients.length; 
+  if (state.bun !== null) 
+  {count++}  
+  return count;
+}

@@ -4,8 +4,11 @@ import { ConstructorElement, Button, CurrencyIcon, DragIcon } from "@ya.praktiku
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
 import { useDispatch, useSelector } from 'react-redux';
-import { DELETE_INGREDIENTS, CLEAR_INGREDIENTS, ADD_PRICE } from '../../services/actions/list-ingredients-constructor-actions';
+import { DELETE_INGREDIENTS, CLEAR_INGREDIENTS, ADD_PRICE, ADD_INGREDIENTS, COUNT_INGREDIENTS } from '../../services/actions/list-ingredients-constructor-actions';
 import { addDataOrder } from '../../services/actions/order-actions';
+import { useDrop } from "react-dnd";
+import { generateUuid } from '@packageforge/uuid';
+
 
 function BurgerConstructor() {
   const IngredientsConstructor = (store) => {
@@ -22,12 +25,31 @@ function BurgerConstructor() {
   const handleClickDeleteIngredient = (evt, ingredient) => {
     dispatch({ type: DELETE_INGREDIENTS, payload: ingredient });
     dispatch({ type: ADD_PRICE, payload: { ...ingredient } });
+    dispatch({ type: COUNT_INGREDIENTS });
   };
 
   const handleClickClearConstructor = () => {
     dispatch({ type: CLEAR_INGREDIENTS });
-    dispatch({ type: ADD_PRICE });
   };
+
+  const AddIngredient = (ingredient) => {
+    const key = generateUuid();
+    dispatch({ type: ADD_INGREDIENTS, payload: { ...ingredient, uuid: key } });
+    dispatch({ type: ADD_PRICE, payload: { ...ingredient } });
+    dispatch({ type: COUNT_INGREDIENTS });
+  };
+
+  const [{ isHover }, dropTarget] = useDrop({
+    accept: "animal",
+    drop(data) {
+      AddIngredient(data);
+    },
+    collect: monitor => ({
+      isHover: monitor.isOver(),
+    }),
+  });
+
+  const borderColor = isHover ? 'lightgreen' : 'transparent';
 
   const [isModal, setModal] = React.useState(false);
 
@@ -36,7 +58,7 @@ function BurgerConstructor() {
     setModal(false);
   }
 
-  const addOrder = (order) => {
+  const AddOrder = (order) => {
     dispatch(addDataOrder(order));
     setModal(true);
   };
@@ -47,7 +69,7 @@ function BurgerConstructor() {
       setIngredientsList.ingredients.map((ingredient) => { newOrder.push(ingredient._id); }));
     setIngredientsList.bun && (newOrder.push(setIngredientsList.bun._id));
     setIngredientsList.bun && (newOrder.unshift(setIngredientsList.bun._id));
-    addOrder({ ingredients: newOrder });
+    AddOrder({ ingredients: newOrder });
   }
 
   function AddIngredientBurger(parameter) {
@@ -79,10 +101,9 @@ function BurgerConstructor() {
   }
 
 
-
   return (
     <section className={styles.section}>
-      <ul className={`${styles.ingrediensList} mt-25 mb-10 ml-4`}>
+      <ul className={`${styles.ingrediensList} mt-25 mb-10 ml-4`} ref={dropTarget} style={{ borderColor }}>
         {setIngredientsList.bun &&
           (<li className={`${styles.ingrediens} ml-8`}>
             <ConstructorElement type="top" isLocked={true} text={`${setIngredientsList.bun.name} (вверх)`} price={setIngredientsList.bun.price}
