@@ -30,23 +30,3 @@ export const listIngredientsConstructorReducer = (state = initialState, action) 
   }
 };
 
-{/*
-
-
-  function priceReducer(state, action) {
-    switch (action.type) {
-      case "change":
-        {
-          let newSum = 0;
-          ingredientsContext.bun && (newSum = ingredientsContext.bun.price)
-          ingredientsContext.ingredients && (
-            ingredientsContext.ingredients.map((ingredient) => { newSum = newSum + ingredient.price })
-          )
-          return { ...state, sum: newSum }
-        }
-      default:
-        throw new Error(`Wrong type of action: ${action.type}`);
-    };
-  };
-
-*/}

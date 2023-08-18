@@ -3,12 +3,11 @@ import styles from "./burger-ingredients.module.css";
 import { Tab, Counter, CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
-import { ingredientPropType } from "../../utils/prop-types.js";
-import PropTypes from "prop-types";
 import { generateUuid } from '@packageforge/uuid';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_INGREDIENTS, ADD_PRICE } from '../../services/actions/list-ingredients-constructor-actions';
+import { OPEN_INGREDIENT, CLOSE_INGREDIENT } from '../../services/actions/ingredient-details-modal-actions';
 
 {/* На данный момент, сделано так ->
 При клике на цену ингредиент добавляется в конструктор, а при клике на иконку - открывается попап ингредиента. */}
@@ -24,9 +23,18 @@ function BurgerIngredients() {
     dispatch({ type: ADD_PRICE, payload: { ...ingredient } });
   };
 
-  const [element, setDataModal] = React.useState([]);
   const [isModal, setModal] = React.useState(false);
-  const onClose = () => setModal(false);
+
+  const handleOpenIngredient = (ingredient) => {
+    dispatch({ type: OPEN_INGREDIENT, payload: { ...ingredient } });
+    setModal(true);
+  };
+
+  const handleCloseIngredient = () => {
+    dispatch({ type: CLOSE_INGREDIENT });
+    setModal(false);
+  };
+    
 
   function BlockTab() {
     const [current, setCurrent] = React.useState('bun')
@@ -48,7 +56,7 @@ function BurgerIngredients() {
             if (ingredient.type === type) {
               return (
                 <li className={styles.element} key={ingredient['_id']} data={ingredient}>
-                  <img className={styles.image} src={ingredient.image} alt="Фото ингредиента" onClick={() => handleMenuClick(ingredient)} />
+                  <img className={styles.image} src={ingredient.image} alt="Фото ингредиента" onClick={() => handleOpenIngredient(ingredient)} />
                   <div className={styles.counter} style={{ display: "none" }}>
                     <Counter count={1} size="default" extraClass={`m-1`} /></div>
                   <p className={`${styles.names} text text_type_main-small`}>{ingredient.name}</p>
@@ -65,10 +73,6 @@ function BurgerIngredients() {
     )
   }
 
-  const handleMenuClick = (ingredient) => {
-    setDataModal(ingredient);
-    setModal(true);
-  };
 
   return (
     <section className={styles.section}>
@@ -80,7 +84,7 @@ function BurgerIngredients() {
         <BlockMenu title="Начинки" type="main" parament={parameter} />
       </div>
 
-      {isModal && (<Modal onClose={onClose}><IngredientDetails data={element} /></Modal>)}
+      {isModal && (<Modal onClose={handleCloseIngredient}><IngredientDetails /></Modal>)}
 
     </section>
   );
@@ -88,12 +92,7 @@ function BurgerIngredients() {
 }
 
 export default BurgerIngredients;
-{/*
-BurgerIngredients.propTypes = {
-  parameter: PropTypes.arrayOf(ingredientPropType.isRequired,),
-  ClickIngredientMenu: PropTypes.func.isRequired
-};
-*/}
+
 
 {/* Прошлый вариант. Не забыть от сюда перекинуть работу с popup!
 
