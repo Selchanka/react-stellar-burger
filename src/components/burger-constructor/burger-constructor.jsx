@@ -3,11 +3,15 @@ import styles from "./burger-constructor.module.css";
 import { ConstructorElement, Button, CurrencyIcon, DragIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
+import Fillings from "./fillings/fillings"
 import { useDispatch, useSelector } from 'react-redux';
 import { DELETE_INGREDIENTS, CLEAR_INGREDIENTS, ADD_PRICE, ADD_INGREDIENTS, COUNT_INGREDIENTS } from '../../services/actions/list-ingredients-constructor-actions';
 import { addDataOrder } from '../../services/actions/order-actions';
 import { useDrop } from "react-dnd";
 import { generateUuid } from '@packageforge/uuid';
+
+//import Fillings from "./fillings/fillings"
+import BurgerFilling from "./burger-filling/burger-filling"
 
 
 function BurgerConstructor() {
@@ -21,12 +25,6 @@ function BurgerConstructor() {
   const setIngredientsList = useSelector(IngredientsConstructor);
 
   const dispatch = useDispatch();
-
-  const handleClickDeleteIngredient = (evt, ingredient) => {
-    dispatch({ type: DELETE_INGREDIENTS, payload: ingredient });
-    dispatch({ type: ADD_PRICE, payload: { ...ingredient } });
-    dispatch({ type: COUNT_INGREDIENTS });
-  };
 
   const handleClickClearConstructor = () => {
     dispatch({ type: CLEAR_INGREDIENTS });
@@ -48,9 +46,7 @@ function BurgerConstructor() {
       isHover: monitor.isOver(),
     }),
   });
-
   const borderColor = isHover ? 'lightgreen' : 'transparent';
-
   const [isModal, setModal] = React.useState(false);
 
   function onClose() {
@@ -72,25 +68,6 @@ function BurgerConstructor() {
     AddOrder({ ingredients: newOrder });
   }
 
-  function AddIngredientBurger(parameter) {
-    const ingredient = parameter.parameter.ingredients;
-    if (ingredient.length > 0) {
-      return (ingredient.map((item) => {
-        return (
-          <li className={styles.ingrediens} key={item.uuid}>
-            <div className={styles.drag}><DragIcon type="primary" /></div>
-            <ConstructorElement text={item.name}
-              price={item.price}
-              thumbnail={item.image_mobile}
-              handleClose={(evt) => handleClickDeleteIngredient(evt, item)}
-            />
-          </li>
-        )
-      }))
-    }
-    else { return null; }
-  }
-
   function StateButton() {
     if (setIngredientsList.bun !== null) {
       return (<Button htmlType="button" type="primary" size="large" onClick={OpenModalOrderDetails}>Оформить заказ</Button>)
@@ -99,7 +76,7 @@ function BurgerConstructor() {
       return (<Button htmlType="button" type="primary" size="large" disabled={true} >Оформить заказ</Button>)
     }
   }
-
+  
 
   return (
     <section className={styles.section}>
@@ -111,7 +88,7 @@ function BurgerConstructor() {
           </li>)
         }
         <ul className={`${styles.filling} custom-scroll`}>
-          <AddIngredientBurger parameter={setIngredientsList} />
+         {(setIngredientsList.ingredients.length > 0) && <BurgerFilling  ingredients={setIngredientsList.ingredients}/>}
         </ul>
         {setIngredientsList.bun &&
           (<li className={`${styles.ingrediens} ml-8`}>
