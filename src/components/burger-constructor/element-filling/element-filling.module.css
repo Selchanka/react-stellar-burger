@@ -33,6 +33,7 @@
 .ingrediens {
   display: flex;
   flex-direction: row;
+  
 }
 
 .filling {

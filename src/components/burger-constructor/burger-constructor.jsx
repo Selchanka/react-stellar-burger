@@ -3,26 +3,15 @@ import styles from "./burger-constructor.module.css";
 import { ConstructorElement, Button, CurrencyIcon, DragIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
-import Fillings from "./fillings/fillings"
 import { useDispatch, useSelector } from 'react-redux';
-import { DELETE_INGREDIENTS, CLEAR_INGREDIENTS, ADD_PRICE, ADD_INGREDIENTS, COUNT_INGREDIENTS } from '../../services/actions/list-ingredients-constructor-actions';
+import {  CLEAR_INGREDIENTS, ADD_PRICE, ADD_INGREDIENTS, COUNT_INGREDIENTS, MOVE_INGREDIENTS } from '../../services/actions/list-ingredients-constructor-actions';
 import { addDataOrder } from '../../services/actions/order-actions';
 import { useDrop } from "react-dnd";
 import { generateUuid } from '@packageforge/uuid';
-
-//import Fillings from "./fillings/fillings"
-import BurgerFilling from "./burger-filling/burger-filling"
-
+import ElementFilling from "./element-filling/element-filling";
 
 function BurgerConstructor() {
-  const IngredientsConstructor = (store) => {
-    return {
-      bun: store.listIngredientsConstructor.bun,
-      ingredients: store.listIngredientsConstructor.ingredients,
-      price: store.listIngredientsConstructor.price,
-    }
-  }
-  const setIngredientsList = useSelector(IngredientsConstructor);
+  const { bun, ingredients, price } = useSelector(store => store.listIngredientsConstructor)
 
   const dispatch = useDispatch();
 
@@ -30,7 +19,7 @@ function BurgerConstructor() {
     dispatch({ type: CLEAR_INGREDIENTS });
   };
 
-  const AddIngredient = (ingredient) => {
+  const addIngredient = (ingredient) => {
     const key = generateUuid();
     dispatch({ type: ADD_INGREDIENTS, payload: { ...ingredient, uuid: key } });
     dispatch({ type: ADD_PRICE, payload: { ...ingredient } });
@@ -40,13 +29,14 @@ function BurgerConstructor() {
   const [{ isHover }, dropTarget] = useDrop({
     accept: "animal",
     drop(data) {
-      AddIngredient(data);
+      addIngredient(data);
     },
     collect: monitor => ({
       isHover: monitor.isOver(),
     }),
   });
   const borderColor = isHover ? 'lightgreen' : 'transparent';
+
   const [isModal, setModal] = React.useState(false);
 
   function onClose() {
@@ -54,51 +44,63 @@ function BurgerConstructor() {
     setModal(false);
   }
 
-  const AddOrder = (order) => {
+  const addOrder = (order) => {
     dispatch(addDataOrder(order));
     setModal(true);
   };
 
-  function OpenModalOrderDetails() {
+  function openModalOrderDetails() {
     let newOrder = [];
-    setIngredientsList.ingredients && (
-      setIngredientsList.ingredients.map((ingredient) => { newOrder.push(ingredient._id); }));
-    setIngredientsList.bun && (newOrder.push(setIngredientsList.bun._id));
-    setIngredientsList.bun && (newOrder.unshift(setIngredientsList.bun._id));
-    AddOrder({ ingredients: newOrder });
+    ingredients && (
+      ingredients.map((ingredient) => { newOrder.push(ingredient._id); }));
+    bun && (newOrder.push(bun._id));
+    bun && (newOrder.unshift(bun._id));
+    addOrder({ ingredients: newOrder });
   }
 
   function StateButton() {
-    if (setIngredientsList.bun !== null) {
-      return (<Button htmlType="button" type="primary" size="large" onClick={OpenModalOrderDetails}>Оформить заказ</Button>)
+    if (bun !== null) {
+      return (<Button htmlType="button" type="primary" size="large" onClick={openModalOrderDetails}>Оформить заказ</Button>)
     }
     else {
       return (<Button htmlType="button" type="primary" size="large" disabled={true} >Оформить заказ</Button>)
     }
   }
   
+  const moveIngredients =(dragIndex, hoverIndex) => { 
+    const dragCard = ingredients[dragIndex]; 
+    const newCards = [...ingredients]; 
+    newCards.splice(dragIndex, 1 ); 
+    newCards.splice(hoverIndex, 0, dragCard); 
+    dispatch({ type: MOVE_INGREDIENTS, payload:newCards }); 
+  }
+
 
   return (
     <section className={styles.section}>
       <ul className={`${styles.ingrediensList} mt-25 mb-10 ml-4`} ref={dropTarget} style={{ borderColor }}>
-        {setIngredientsList.bun &&
+        {bun &&
           (<li className={`${styles.ingrediens} ml-8`}>
-            <ConstructorElement type="top" isLocked={true} text={`${setIngredientsList.bun.name} (вверх)`} price={setIngredientsList.bun.price}
-              thumbnail={setIngredientsList.bun.image_mobile} />
+            <ConstructorElement type="top" isLocked={true} text={`${bun.name} (вверх)`} price={bun.price}
+              thumbnail={bun.image_mobile} />
           </li>)
         }
+
         <ul className={`${styles.filling} custom-scroll`}>
-         {(setIngredientsList.ingredients.length > 0) && <BurgerFilling  ingredients={setIngredientsList.ingredients}/>}
+         {(ingredients.length > 0) && 
+         ingredients.map((item, index) => (<ElementFilling key={item.uuid} index={index} id={item.id} item={item} moveIngredients={moveIngredients} />))
+         }
         </ul>
-        {setIngredientsList.bun &&
+       
+        {bun &&
           (<li className={`${styles.ingrediens} ml-8`}>
-            <ConstructorElement type="bottom" isLocked={true} text={`${setIngredientsList.bun.name} (низ)`} price={setIngredientsList.bun.price}
-              thumbnail={setIngredientsList.bun.image_mobile} />
+            <ConstructorElement type="bottom" isLocked={true} text={`${bun.name} (низ)`} price={bun.price}
+              thumbnail={bun.image_mobile} />
           </li>)
         }
       </ul>
       <div className={`${styles.finish} mr-4 ml-4`} id="modal">
-        <p className={`${styles.price} text text_type_main-large`}>{setIngredientsList.price}</p>
+        <p className={`${styles.price} text text_type_main-large`}>{price}</p>
         <div className={`mr-10 ml-3`}> <CurrencyIcon type="primary" /></div>
         <StateButton />
       </div>

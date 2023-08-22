@@ -1,4 +1,4 @@
-export  function PriceFinish(state) {
+export  function priceFinish(state) {
         let newSum = 0;
         state.bun && (newSum = state.bun.price)
         state.ingredients && (
