@@ -1,9 +1,9 @@
-import React from "react";
 import styles from "./ingredient-details.module.css";
-import { ingredientPropType } from '../../utils/prop-types';
+import { useSelector } from 'react-redux';
 
-function IngredientDetails({data}) { 
-  
+function IngredientDetails() { 
+ 
+  const data = useSelector((store) => store.ingredientDetailsModal.ingredient);
   return (
     <div className={`${styles.modalConstructor}`}>
       <h1 className={`${styles.modalTitle} text text_type_main-large mt-10`}>Детали ингредиента</h1>
@@ -33,6 +33,6 @@ function IngredientDetails({data}) {
 
 export default IngredientDetails;
 
-IngredientDetails.propTypes = {data: ingredientPropType.isRequired,};
+
 
 

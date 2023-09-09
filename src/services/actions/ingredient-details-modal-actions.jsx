@@ -1,0 +1,4 @@
+export const OPEN_INGREDIENT = 'OPEN_INGREDIENT';
+export const CLOSE_INGREDIENT = 'CLOSE_INGREDIENT';
+
+
